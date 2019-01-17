@@ -1,3 +1,0 @@
-/home/rino/Desktop/Cook/build/CMakeFiles/rebuild_cache.dir
-/home/rino/Desktop/Cook/build/CMakeFiles/cook.dir
-/home/rino/Desktop/Cook/build/CMakeFiles/edit_cache.dir
