@@ -6,16 +6,17 @@
 #include <thread>
 #include <vector>
 
+
 namespace Cook
 {
     class TcpConn;
 
-    class WorkerThread
+    class Worker
     {
         friend class TcpServer;
     public:
-        WorkerThread();
-        ~WorkerThread();
+        Worker();
+        ~Worker();
     private:
         std::thread* t;
         EventLoop* loop;
@@ -42,5 +43,7 @@ namespace Cook
         EventLoop main_loop_;
         Acceptor acceptor_;
         std::vector<WorkerThread> thread_pool_;
+        std::vector<EventLoop> loop_pool_;
+        WorkerThread* log_thread_;
     };
 }

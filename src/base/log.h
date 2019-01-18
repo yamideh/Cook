@@ -47,10 +47,11 @@ namespace CookUtil
             return *this;
         }
 
+        void Loop();
+
         void Flush();
 
     private:
-            
         struct ThreadPair
         {
             int32_t index{ 0 };

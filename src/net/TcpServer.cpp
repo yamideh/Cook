@@ -5,18 +5,7 @@
 
 namespace Cook
 {
-    WorkerThread::WorkerThread()
-    {
-        loop = new EventLoop;
-        t = new std::thread(std::bind(&EventLoop::Loop,loop));
-    }
-
-    WorkerThread::~WorkerThread()
-    {
-        t->join();
-        delete loop;
-        delete t;
-    }
+    using namespace CookUtil;
 
     uint64_t TcpServer::acceptor_index = 0;
 
@@ -26,7 +15,11 @@ namespace Cook
         main_loop_.Init();
         assert(thread_num > 0);
         acceptor_.SetNewConnectionBack(std::bind(&TcpServer::OnNewConnection,this,std::placeholders::_1));
-        thread_pool_.resize(thread_num);
+        for(int i = 0 ; i < thread_num ; ++i)
+        {
+            loop_pool_.emplace_back();
+            thread_pool_.emplace_back(std::bind(&EventLoop::Loop,&loop_pool_.back()));
+        }
     }
 
     uint64_t TcpServer::GetSessionID(uint32_t fd)

@@ -11,6 +11,12 @@ namespace CookUtil
         thread_ = new std::thread(&WorkerThread::Start,this);
     }
 
+    WorkerThread::~WorkerThread()
+    {
+        thread_.join();
+        delete thread_;
+    }
+
     void WorkerThread::Start()
     {
         LogMgr::Instance().Register(thread_index_);

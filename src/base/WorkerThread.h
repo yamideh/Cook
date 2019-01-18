@@ -9,7 +9,7 @@ namespace CookUtil
     {
     public:
         WorkerThread(const std::function<void()>& func);
-
+        ~WorkerThread();
         void Start();
 
     private:
