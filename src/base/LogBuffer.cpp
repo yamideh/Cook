@@ -22,7 +22,7 @@ namespace CookUtil
         }
         else
         {
-            
+
         }
         IncrWriteIndex(log.size());
     }
@@ -30,7 +30,7 @@ namespace CookUtil
     void HotExpand(int32_t size)
     {
         assert( size > init_size);
-        std::vector<char> new_log_;
+        std::vector<char> new_log;
         new_log.resize(size);
         {
             std::lock_guard<std::mutex> lock(mutex_);
@@ -40,7 +40,7 @@ namespace CookUtil
             }
             write_index_ -= read_index_;
             read_index_ = 0;
-            new_log_.swap(all_log_);
+            new_log.swap(all_log_);
         }
     }
 }

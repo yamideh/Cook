@@ -27,8 +27,8 @@ namespace CookUtil
             return p.thread_id_ == current_id;
         });
         assert( it!= id_2_index_.end());
-        assert(it.index < log_buffer_.size());
-        log_buffer_[it.index].AddLog(ss.str());
+        assert(it->index < log_buffer_.size());
+        log_buffer_[it->index].AddLog(ss.str());
         ss.str("");
     }
 
