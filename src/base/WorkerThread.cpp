@@ -13,7 +13,7 @@ namespace CookUtil
 
     WorkerThread::~WorkerThread()
     {
-        thread_.join();
+        thread_->join();
         delete thread_;
     }
 

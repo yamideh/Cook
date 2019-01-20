@@ -5,6 +5,8 @@
 #include <iostream>
 #include <stdio.h>
 #include <cassert>
+#include <thread>
+#include <chrono>
 
 namespace Cook
 {
@@ -12,6 +14,7 @@ namespace Cook
     {
         poll_fd_ = epoll_create1(EPOLL_CLOEXEC);
         all_events_.resize(16);
+        std::cout << " fd is " << poll_fd_ << std::endl;
     }
 
     Poller::~Poller()
@@ -55,6 +58,8 @@ namespace Cook
 
     int32_t Poller::Poll(int32_t millseconds,std::vector<Channel*>* active_channels)
     {
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        std::cout << " fd is " << poll_fd_ << std::endl;
         auto event_num = epoll_wait(poll_fd_,&(*all_events_.begin()),static_cast<int32_t>(all_events_.size()),millseconds);
         if(event_num <0)
         {

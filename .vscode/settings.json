@@ -39,6 +39,8 @@
         "condition_variable": "cpp",
         "iostream": "cpp",
         "mutex": "cpp",
-        "atomic": "cpp"
+        "atomic": "cpp",
+        "algorithm": "cpp",
+        "deque": "cpp"
     }
 }

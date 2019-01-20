@@ -8,6 +8,7 @@ namespace Cook
     void DefaultEchoMessageCallback(const ConnPtr& ptr,Buffer* buf)
     {
         std::string msg(buf->GetReadPos(),buf->ReadableBytes());
+        std::cout << " msg is " << msg << std::endl;
         ptr->Send(buf->GetReadPos(),buf->ReadableBytes());
         buf->RetrieveAll();
     }

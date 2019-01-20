@@ -5,22 +5,14 @@
 #include "EventLoop.h"
 #include <thread>
 #include <vector>
-
+#include "WorkerThread.h"
+#include <functional>
 
 namespace Cook
 {
-    class TcpConn;
+    using namespace CookUtil;
 
-    class Worker
-    {
-        friend class TcpServer;
-    public:
-        Worker();
-        ~Worker();
-    private:
-        std::thread* t;
-        EventLoop* loop;
-    };
+    class TcpConn;
 
     class TcpServer
     {
@@ -44,6 +36,6 @@ namespace Cook
         Acceptor acceptor_;
         std::vector<WorkerThread> thread_pool_;
         std::vector<EventLoop> loop_pool_;
-        WorkerThread* log_thread_;
+        CookUtil::WorkerThread* log_thread_;
     };
 }

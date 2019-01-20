@@ -15,6 +15,8 @@ namespace Cook
         main_loop_.Init();
         assert(thread_num > 0);
         acceptor_.SetNewConnectionBack(std::bind(&TcpServer::OnNewConnection,this,std::placeholders::_1));
+        loop_pool_.reserve(thread_num);
+        thread_pool_.reserve(thread_num);
         for(int i = 0 ; i < thread_num ; ++i)
         {
             loop_pool_.emplace_back();
@@ -55,7 +57,7 @@ namespace Cook
 
     EventLoop& TcpServer::GetNextLoop()
     {
-        return *thread_pool_[(acceptor_index++)%thread_pool_.size()].loop;
+        return loop_pool_[(acceptor_index++)%thread_pool_.size()];
     }
 
     void TcpServer::Start()

@@ -6,6 +6,7 @@
 #include <cassert>
 #include "acceptor.h"
 #include <mutex>
+#include "MutexWapper.h"
 
 namespace Cook
 {
@@ -37,7 +38,7 @@ namespace Cook
         std::thread::id thread_id_{ 0 };
         std::vector<PendingFunctor> pending_functor_;
         Poller poller_;
-        std::mutex mutex_;
+        MutexWrapper mutex_; 
         uint64_t times_{ 0};
     };
 }

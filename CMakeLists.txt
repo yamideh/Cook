@@ -7,11 +7,11 @@ PROJECT(cook)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -pthread")
 
-add_definitions(-std=c++11)
+add_definitions(-std=c++14)
 add_definitions(-g -o0)
 
  #3.head file path，头文件目录
- INCLUDE_DIRECTORIES(src/net src/base)
+ INCLUDE_DIRECTORIES(src/net src/base src/)
  
  #4.source directory，源文件目录
  AUX_SOURCE_DIRECTORY(src/base SRC)

@@ -3,6 +3,9 @@
 #include <cstdint>
 #include <vector>
 #include <thread>
+#include <sstream>
+#include "LogBuffer.h"
+#include <algorithm>
 
 enum LogLevel
 {
@@ -37,7 +40,12 @@ namespace CookUtil
         template <typename T>
 	    LogMgr& operator << (const T &t)
 	    {
-		    ss << t;
+            static const thread_local auto current_id = std::this_thread::get_id();
+            static const thread_local auto it = std::find_if(id_2_index_.begin(),id_2_index_.end(),[](const auto& p)->bool
+            {
+                return p.thread_id_ == current_id;
+            });
+		    sss[it->index] << t;
 		    return *this;
 	    }
 
@@ -58,8 +66,7 @@ namespace CookUtil
             std::thread::id thread_id_{ 0 };
         };
 
-        thread_local std::stringstream ss;
-        thread_local LogLevel level_{LogTrace};
+        std::vector<std::stringstream> sss;
         std::vector<ThreadPair> id_2_index_;
         std::vector<LogBuffer> log_buffer_;
     };

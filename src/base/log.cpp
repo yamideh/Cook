@@ -1,35 +1,44 @@
 #include "log.h"
 #include <stdio.h>
 
+#include <cassert>
+
 namespace CookUtil
 {
     LogMgr::LogMgr(int32_t thread_num)
     {
-        log_buffer_.resize(thread_num);
+        // while(thread_num -- >0)
+        // {
+        //     log_buffer_.emplace_back();
+        // }
+        // log_buffer_.resize(thread_num);
     }
 
     void LogMgr::Register(int32_t thread_index)
     {
-        ThreadPair p { thread_index, std::this_thread::get_id()};
-        id_2_index_.emplace_back(p);
+        id_2_index_.emplace_back();
+        auto& p = id_2_index_.back();
+        p.thread_id_ = std::this_thread::get_id();
+        p.index = thread_index;
     }
 
     LogMgr& LogMgr::Stream(LogLevel level)
     {
-        level_ = level;
+        // level_ = level;
     }
 
     void LogMgr::Flush()
     {
         static const thread_local auto current_id = std::this_thread::get_id();
-        static const thread_local auto it = std::find_if(id_2_index_.begin(),id_2_index_.end(),[current_id](const auto& p)->bool
+        static const thread_local auto it = std::find_if(id_2_index_.begin(),id_2_index_.end(),[](const auto& p)->bool
         {
             return p.thread_id_ == current_id;
         });
+        static const thread_local auto index = it->index;
         assert( it!= id_2_index_.end());
-        assert(it->index < log_buffer_.size());
-        log_buffer_[it->index].AddLog(ss.str());
-        ss.str("");
+        assert(index < log_buffer_.size());
+        log_buffer_[index].AddLog(sss[index].str());
+        sss[index].str("");
     }
 
     void LogMgr::Loop()
@@ -40,16 +49,14 @@ namespace CookUtil
         {
             for(auto& buf : log_buffer_)
             {
-                std::lock_guard<std::mutex> lock(buf.GetLogMutex());
+                buf.Lock();
                 const auto write_index = buf.GetWriteIndex();
                 const auto log_size = buf.GetAllLog().size();
-                for(auto i = buf.GetReadIndex(); i <= write_index_; ++i)
+                for(auto i = buf.GetReadIndex(); i <= write_index; ++i)
                 {
-                    // fprintf(fp,buf.GetAllLog[i%log_size].c_str());
-                    // fprintf("\n");
-                    // IncrReadIndex();
                     fflush(fp);
                 }
+                buf.Unlock();
             }
         }
         fclose(fp);

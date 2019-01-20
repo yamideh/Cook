@@ -9,7 +9,6 @@ namespace Cook
 
     EventLoop::~EventLoop()
     {
-
     }
 
     void EventLoop::RunInloop(const PendingFunctor & f)
@@ -48,7 +47,7 @@ namespace Cook
     {
         std::vector<PendingFunctor> functors;
         {
-            std::lock_guard<std::mutex> lock(mutex_);
+            std::lock_guard<MutexWrapper> lock(mutex_);
             functors.swap(pending_functor_);
         }
         for(auto& func : functors)
