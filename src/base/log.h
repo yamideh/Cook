@@ -16,19 +16,19 @@ enum LogLevel
     LogFatal = 4, 
 };
 
-struct LogEnd
-{
-};
-
 namespace CookUtil
 {
+    struct LogEnd
+    {
+    };
+
     class LogMgr
     {
     public:
         static LogMgr& Instance()
         {
-            static LogMgr m;
-            return m;
+            static auto m = new LogMgr(thread_num_);
+            return *m;
         }
 
         LogMgr(int32_t thread_num = 1);
@@ -37,35 +37,29 @@ namespace CookUtil
 
         LogMgr& Stream(LogLevel l);
 
+        int32_t GetThreadLocalIndex();
+
         template <typename T>
 	    LogMgr& operator << (const T &t)
 	    {
-            static const thread_local auto current_id = std::this_thread::get_id();
-            static const thread_local auto it = std::find_if(id_2_index_.begin(),id_2_index_.end(),[](const auto& p)->bool
-            {
-                return p.thread_id_ == current_id;
-            });
-		    sss[it->index] << t;
+            sss[GetThreadLocalIndex()]<< t;
 		    return *this;
 	    }
 
-        LogMgr& operator << (LogEnd)
-        {
-            Flush();
-            return *this;
-        }
+        LogMgr& operator << (LogEnd);
 
         void Loop();
 
         void Flush();
 
+        static void SetThreadNum(int32_t num) { thread_num_ = num ;}
     private:
         struct ThreadPair
         {
             int32_t index{ 0 };
             std::thread::id thread_id_{ 0 };
         };
-
+        static int32_t thread_num_;
         std::vector<std::stringstream> sss;
         std::vector<ThreadPair> id_2_index_;
         std::vector<LogBuffer> log_buffer_;

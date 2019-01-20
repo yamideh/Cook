@@ -27,7 +27,9 @@ namespace CookUtil
         }
         else
         {
-
+            const auto left_in_the_end = all_log_.size() - write_index_ % all_log_.size() ;
+            memmove(&all_log_[write_index_ + 1], log.c_str(), left_in_the_end);
+            memmove(&all_log_[0], log.c_str() + left_in_the_end, log.size() - left_in_the_end);
         }
         IncrWriteIndex(log.size());
     }
@@ -39,10 +41,19 @@ namespace CookUtil
         new_log.resize(size);
         {
             std::lock_guard<std::mutex> lock(expand_mutex_);
-            for(uint32_t i = read_index_ + 1; i < write_index_ ; ++i)
-            {
-                memmove(&new_log[0],&all_log_[read_index_],write_index_- read_index_);
+            const auto read_pos = read_index_ % all_log_.size();
+            const auto write_pos = write_index_ % all_log_.size(); 
+            if( read_pos >= write_pos )
+            {   
+                const auto left_in_the_end = all_log_.size() - read_pos;
+                memmove(&new_log[0],&all_log_[read_index_],all_log_.size() - read_pos);
+                memmove(&new_log[left_in_the_end],&all_log_[0],write_pos);
             }
+            else
+            {
+                memmove(&new_log[0],&all_log_[read_index_],read_pos- write_pos);
+            }
+
             write_index_ -= read_index_;
             read_index_ = 0;
             new_log.swap(all_log_);

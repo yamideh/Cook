@@ -8,6 +8,11 @@
 #include "WorkerThread.h"
 #include <functional>
 
+namespace CookUtil
+{
+    class LogThread;
+}
+
 namespace Cook
 {
     using namespace CookUtil;
@@ -36,6 +41,6 @@ namespace Cook
         Acceptor acceptor_;
         std::vector<WorkerThread> thread_pool_;
         std::vector<EventLoop> loop_pool_;
-        CookUtil::WorkerThread* log_thread_;
+        LogThread* log_thread_;
     };
 }

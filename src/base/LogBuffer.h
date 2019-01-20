@@ -10,7 +10,6 @@ namespace CookUtil
     {
     public:
         LogBuffer(int32_t init_size = (1 << 7));
-        LogBuffer(LogBuffer&& ) = delete;
         ~LogBuffer();
 
         void AddLog(const std::string& log); 

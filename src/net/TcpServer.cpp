@@ -2,6 +2,8 @@
 #include "TcpConn.h"
 #include <iostream>
 #include <sys/socket.h>
+#include "log.h"
+#include "LogThread.h"
 
 namespace Cook
 {
@@ -22,6 +24,8 @@ namespace Cook
             loop_pool_.emplace_back();
             thread_pool_.emplace_back(std::bind(&EventLoop::Loop,&loop_pool_.back()));
         }
+        LogMgr::SetThreadNum(thread_num);
+        log_thread_ = new LogThread;
     }
 
     uint64_t TcpServer::GetSessionID(uint32_t fd)
