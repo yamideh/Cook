@@ -51,7 +51,7 @@ namespace CookUtil
             }
             else
             {
-                memmove(&new_log[0],&all_log_[read_index_],read_pos- write_pos);
+                memmove(&new_log[0],&all_log_[read_index_], write_pos - read_pos);
             }
 
             write_index_ -= read_index_;

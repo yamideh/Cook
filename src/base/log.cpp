@@ -9,13 +9,14 @@ namespace CookUtil
 
     LogMgr::LogMgr(int32_t thread_num)
     {
-        log_buffer_.resize(thread_num);
+        log_buffer_.resize(thread_num + 1);
+        sss.resize(thread_num + 1);
+        id_2_index_.resize(thread_num + 1);
     }
 
     void LogMgr::Register(int32_t thread_index)
     {
-        id_2_index_.emplace_back();
-        auto& p = id_2_index_.back();
+        auto& p = id_2_index_[thread_index];
         p.thread_id_ = std::this_thread::get_id();
         p.index = thread_index;
     }
@@ -28,7 +29,8 @@ namespace CookUtil
     void LogMgr::Flush()
     {
         const auto index = GetThreadLocalIndex();
-        log_buffer_[index].AddLog(sss[index].str());
+        const auto& t = sss[index].str();
+        log_buffer_[index].AddLog(t);
         sss[index].str("");
     }
 
@@ -53,7 +55,7 @@ namespace CookUtil
 
     void LogMgr::Loop()
     {
-        auto fp = fopen("/tmp/log/123","a");
+        auto fp = fopen("/tmp/cook_log.txt","a");
         assert(fp);
         for(;;)
         {
@@ -69,10 +71,13 @@ namespace CookUtil
                 }
                 if(write_pos > read_pos)
                 {
+                    // buf.GetAllLog()[write_pos] = "\0";
+                    // fprintf(fp,&buf.GetAllLog()[read_pos]);
                     fwrite(&buf.GetAllLog()[read_pos],sizeof (char),write_pos - read_pos,fp);
                 }
                 else
                 {
+
                     fwrite(&buf.GetAllLog()[read_pos],sizeof (char),log_size - read_pos,fp);
                     fwrite(&buf.GetAllLog()[0],sizeof (char),write_pos,fp);
                 }

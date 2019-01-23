@@ -26,6 +26,7 @@ namespace Cook
         }
         LogMgr::SetThreadNum(thread_num);
         log_thread_ = new LogThread;
+
     }
 
     uint64_t TcpServer::GetSessionID(uint32_t fd)
@@ -66,6 +67,7 @@ namespace Cook
 
     void TcpServer::Start()
     {
+        LogMgr::Instance().Register(0);
         acceptor_.Listen();
         main_loop_.Loop();
     }

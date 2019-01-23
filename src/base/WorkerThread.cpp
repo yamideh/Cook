@@ -6,7 +6,7 @@ namespace CookUtil
     WorkerThread::WorkerThread(const std::function<void()>& func)
         : func_(func)
     {
-        static int32_t i_index = 0;
+        static int32_t i_index = 1;
         thread_index_ = i_index ++;
         thread_ = new std::thread(&WorkerThread::Start,this);
     }

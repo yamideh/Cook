@@ -26,7 +26,7 @@ namespace CookUtil
         void Unlock() { expand_mutex_.unlock();}
 
         const std::vector<char>& GetAllLog() const { return all_log_;}
-
+        std::vector<char>& GetAllLog() { return all_log_;}
     private:
         std::vector<char> all_log_;
         uint64_t read_index_{0};
